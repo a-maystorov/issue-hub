@@ -18,7 +18,7 @@ export default async function IssueDetailsPage({ params }: Props) {
   }
 
   return (
-    <div>
+    <>
       <Heading>{issue.title}</Heading>
 
       <Flex gap="3" my="2">
@@ -29,6 +29,6 @@ export default async function IssueDetailsPage({ params }: Props) {
       <Card className="prose" mt="4">
         <ReactMarkdown>{issue.description}</ReactMarkdown>
       </Card>
-    </div>
+    </>
   );
 }

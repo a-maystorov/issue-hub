@@ -4,14 +4,18 @@ import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { issueSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Callout, TextField } from "@radix-ui/themes";
+import { Box, Button, Callout, TextField } from "@radix-ui/themes";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import SimpleMdeReact from "react-simplemde-editor";
 import { z } from "zod";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 type IssueForm = z.infer<typeof issueSchema>;
 
@@ -40,7 +44,7 @@ export default function NewIssuePage() {
   });
 
   return (
-    <div className="max-w-xl">
+    <Box className="max-w-xl">
       {error && (
         <Callout.Root className="mb-5" color="red">
           <Callout.Text>{error}</Callout.Text>
@@ -58,7 +62,7 @@ export default function NewIssuePage() {
           name="description"
           control={control}
           render={({ field }) => (
-            <SimpleMdeReact placeholder="Description" {...field} />
+            <SimpleMDE placeholder="Description" {...field} />
           )}
         />
 
@@ -68,6 +72,6 @@ export default function NewIssuePage() {
           Submit New Issue {isSubmitting && <Spinner />}
         </Button>
       </form>
-    </div>
+    </Box>
   );
 }
