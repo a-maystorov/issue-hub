@@ -3,6 +3,8 @@ import prisma from "@/prisma/client";
 import { Box, Table } from "@radix-ui/themes";
 import IssueActions from "./IssueActions";
 
+export const dynamic = "force-dynamic";
+
 export default async function IssuesPage() {
   const issues = await prisma.issue.findMany();
 
