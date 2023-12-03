@@ -5,6 +5,7 @@ import { Issue, User } from "@prisma/client";
 import { Select } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function AssigneeSelect({ issue }: { issue: Issue }) {
   const {
@@ -27,27 +28,37 @@ export default function AssigneeSelect({ issue }: { issue: Issue }) {
   }
 
   return (
-    <Select.Root
-      defaultValue={issue.assignedToUserId || "unassigned"}
-      onValueChange={(userId) => {
-        axios.patch("/api/issues/" + issue.id, {
-          assignedToUserId: userId === "unassigned" ? null : userId,
-        });
-      }}
-    >
-      <Select.Trigger placeholder="Assign..." />
+    <>
+      <Select.Root
+        defaultValue={issue.assignedToUserId || "unassigned"}
+        onValueChange={(userId) => {
+          axios
+            .patch("/api/issues/" + issue.id, {
+              assignedToUserId: userId === "unassigned" ? null : userId,
+            })
+            .catch(() => {
+              toast.error("Changes could not be saved.");
+            });
+        }}
+      >
+        <Select.Trigger placeholder="Assign..." />
 
-      <Select.Content>
-        <Select.Group>
-          <Select.Label>Suggestions</Select.Label>
-          <Select.Item value="unassigned">Unassigned</Select.Item>
-          {users?.map((user) => (
-            <Select.Item key={user.id} value={user.id}>
-              {user.name}
-            </Select.Item>
-          ))}
-        </Select.Group>
-      </Select.Content>
-    </Select.Root>
+        <Select.Content>
+          <Select.Group>
+            <Select.Label>Suggestions</Select.Label>
+
+            <Select.Item value="unassigned">Unassigned</Select.Item>
+
+            {users?.map((user) => (
+              <Select.Item key={user.id} value={user.id}>
+                {user.name}
+              </Select.Item>
+            ))}
+          </Select.Group>
+        </Select.Content>
+      </Select.Root>
+
+      <Toaster></Toaster>
+    </>
   );
 }
